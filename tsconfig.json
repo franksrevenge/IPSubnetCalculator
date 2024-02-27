@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "pretty": true,
+    "alwaysStrict": true,
+    "lib": [],
+    "module": "es6",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "lib",
+    "sourceMap": false,
+    "strict": true,
+    "strictPropertyInitialization": true,
+    "target": "es6",
+    "esModuleInterop": true,
+    "resolveJsonModule": false,
+    "emitDecoratorMetadata": false,
+    "experimentalDecorators": false,
+    "noErrorTruncation": true,
+    "inlineSources": false,
+    "noEmitHelpers": false,
+    "importHelpers": false,
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": false,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src",
+    "resources",
+    "examples",
+    "test"
+  ]
+}

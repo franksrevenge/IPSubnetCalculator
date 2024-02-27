@@ -1,4 +1,4 @@
-var ipsc = require( 'ip-subnet-calculator' );
+const ipsc = require( 'ip-subnet-calculator' );
 
 console.log( 'Is "127.0.0.1" an IP?', ipsc.isIp( '127.0.0.1' ) );
 

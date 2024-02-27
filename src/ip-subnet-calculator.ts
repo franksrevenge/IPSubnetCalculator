@@ -29,6 +29,25 @@
  * Use `calculate()`, `calculateSubnetMask()`, and `calculateCIDRPrefix()` for easy access.
  *
  */
+
+export type IPAny = string | number;
+export type IPString = string;
+export type IPNumber = number;
+export type BitCount = number;
+
+export interface SubnetAnalysis {
+  ipLow: IPNumber;
+  ipLowStr: IPString;
+  ipHigh: IPNumber;
+  ipHighStr: IPString;
+  prefixMask: IPNumber;
+  prefixMaskStr: IPString;
+  prefixSize: BitCount;
+  invertedMask: IPNumber;
+  invertedMaskStr: IPString;
+  invertedMaskSize: BitCount;
+}
+
 /**
  * Creates a bitmask with maskSize leftmost bits set to one
  *
@@ -36,15 +55,18 @@
  * @return {int} Returns the bitmask
  * @private
  */
-export const getPrefixMask = (prefixSize) => {
-    let mask = 0;
-    let i;
-    for (i = 0; i < prefixSize; i += 1) {
-        // eslint-disable-next-line no-bitwise
-        mask += (1 << (32 - (i + 1))) >>> 0;
-    }
-    return mask;
+export const getPrefixMask = (prefixSize: BitCount): IPNumber => {
+  let mask = 0;
+  let i;
+
+  for (i = 0; i < prefixSize; i += 1) {
+    // eslint-disable-next-line no-bitwise
+    mask += (1 << (32 - (i + 1))) >>> 0;
+  }
+
+  return mask;
 };
+
 /**
  * Creates a bitmask with maskSize rightmost bits set to one
  *
@@ -52,49 +74,61 @@ export const getPrefixMask = (prefixSize) => {
  * @return {int} Returns the bitmask
  * @private
  */
-export const getMask = (maskSize) => {
-    let mask = 0;
-    let i;
-    for (i = 0; i < maskSize; i += 1) {
-        // eslint-disable-next-line no-bitwise
-        mask += (1 << i) >>> 0;
-    }
-    return mask;
+export const getMask = (maskSize: BitCount): IPNumber => {
+  let mask = 0;
+  let i;
+
+  for (i = 0; i < maskSize; i += 1) {
+    // eslint-disable-next-line no-bitwise
+    mask += (1 << i) >>> 0;
+  }
+
+  return mask;
 };
+
 /**
  * Test whether string is an IP address
  * @param {string} ip
  * @returns {boolean}
  * @public
  */
-export const isIp = (ip) => {
-    if (typeof ip !== 'string') {
-        return false;
+export const isIp = (ip: IPString): boolean => {
+  if (typeof ip !== 'string') {
+    return false;
+  }
+
+  const parts = ip.match(/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/);
+
+  if (parts === null) {
+    return false;
+  }
+
+  for (let i = 1; i <= 4; i += 1) {
+    const n = parseInt(parts[i], 10);
+
+    if (n > 255 || n < 0) {
+      return false;
     }
-    const parts = ip.match(/^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$/);
-    if (parts === null) {
-        return false;
-    }
-    for (let i = 1; i <= 4; i += 1) {
-        const n = parseInt(parts[i], 10);
-        if (n > 255 || n < 0) {
-            return false;
-        }
-    }
-    return true;
+  }
+
+  return true;
 };
+
 /**
  * Test whether number is an IP address
  * @param {number} ipNum
  * @returns {boolean}
  * @public
  */
-export const isDecimalIp = (ipNum) => {
-    return (typeof ipNum === 'number' && // is this a number?
-        ipNum % 1 === 0 && // does the number have a decimal place?
-        ipNum >= 0 &&
-        ipNum <= 4294967295);
+export const isDecimalIp = (ipNum: IPNumber): boolean => {
+  return (
+    typeof ipNum === 'number' && // is this a number?
+    ipNum % 1 === 0 && // does the number have a decimal place?
+    ipNum >= 0 &&
+    ipNum <= 4294967295
+  );
 };
+
 /**
  * Converts string formatted IPs to decimal representation
  *
@@ -104,16 +138,20 @@ export const isDecimalIp = (ipNum) => {
  * @throws {Error} Throws an error, if `ipString` does not contain an IP address.
  * @private
  */
-export const toDecimal = (ipString) => {
-    if (typeof ipString === 'number' && isDecimalIp(ipString)) {
-        return ipString;
-    }
-    if (typeof ipString !== 'string' || !isIp(ipString)) {
-        throw new Error(`Not an IP address: ${ipString}`);
-    }
-    const d = ipString.split('.');
-    return ((+d[0] * 256 + +d[1]) * 256 + +d[2]) * 256 + +d[3];
+export const toDecimal = (ipString: IPString | IPNumber): IPNumber => {
+  if (typeof ipString === 'number' && isDecimalIp(ipString)) {
+    return ipString;
+  }
+
+  if (typeof ipString !== 'string' || !isIp(ipString)) {
+    throw new Error(`Not an IP address: ${ipString}`);
+  }
+
+  const d = ipString.split('.');
+
+  return ((+d[0] * 256 + +d[1]) * 256 + +d[2]) * 256 + +d[3];
 };
+
 /**
  * Converts decimal IPs to string representation
  *
@@ -123,21 +161,26 @@ export const toDecimal = (ipString) => {
  * @throws {Error} Throws an error, if `ipNum` is out of range, not a decimal, or not a number
  * @private
  */
-export const toString = (ipNum) => {
-    if (typeof ipNum === 'string' && isIp(ipNum)) {
-        return ipNum;
-    }
-    if (typeof ipNum !== 'number' || !isDecimalIp(ipNum)) {
-        throw new Error(`Not a numeric IP address: ${ipNum}`);
-    }
-    let d = `${ipNum % 256}`;
-    let curIp = ipNum;
-    for (let i = 3; i > 0; i -= 1) {
-        curIp = Math.floor(curIp / 256);
-        d = `${curIp % 256}.${d}`;
-    }
-    return d;
+export const toString = (ipNum: IPNumber | IPString): IPString => {
+  if (typeof ipNum === 'string' && isIp(ipNum)) {
+    return ipNum;
+  }
+
+  if (typeof ipNum !== 'number' || !isDecimalIp(ipNum)) {
+    throw new Error(`Not a numeric IP address: ${ipNum}`);
+  }
+
+  let d = `${ipNum % 256}`;
+  let curIp = ipNum;
+
+  for (let i = 3; i > 0; i -= 1) {
+    curIp = Math.floor(curIp / 256);
+    d = `${curIp % 256}.${d}`;
+  }
+
+  return d;
 };
+
 /**
  * Calculates details of a CIDR subnet
  *
@@ -157,26 +200,31 @@ export const toString = (ipNum) => {
  * invertedMaskSize - Number of relevant bits in the inverted mask
  * @private
  */
-export const getMaskRange = (ipNum, prefixSize) => {
-    const prefixMask = getPrefixMask(prefixSize);
-    const lowMask = getMask(32 - prefixSize);
-    // eslint-disable-next-line no-bitwise
-    const ipLow = (ipNum & prefixMask) >>> 0;
-    // eslint-disable-next-line no-bitwise
-    const ipHigh = (((ipNum & prefixMask) >>> 0) + lowMask) >>> 0;
-    return {
-        ipLow,
-        ipLowStr: toString(ipLow),
-        ipHigh,
-        ipHighStr: toString(ipHigh),
-        prefixMask,
-        prefixMaskStr: toString(prefixMask),
-        prefixSize,
-        invertedMask: lowMask,
-        invertedMaskStr: toString(lowMask),
-        invertedMaskSize: 32 - prefixSize,
-    };
+export const getMaskRange = (ipNum: IPNumber, prefixSize: BitCount): SubnetAnalysis => {
+  const prefixMask: IPNumber = getPrefixMask(prefixSize);
+  const lowMask: IPNumber = getMask(32 - prefixSize);
+  // eslint-disable-next-line no-bitwise
+  const ipLow: IPNumber = (ipNum & prefixMask) >>> 0;
+  // eslint-disable-next-line no-bitwise
+  const ipHigh: IPNumber = (((ipNum & prefixMask) >>> 0) + lowMask) >>> 0;
+
+  return {
+    ipLow,
+    ipLowStr: toString(ipLow),
+
+    ipHigh,
+    ipHighStr: toString(ipHigh),
+
+    prefixMask,
+    prefixMaskStr: toString(prefixMask),
+    prefixSize,
+
+    invertedMask: lowMask,
+    invertedMaskStr: toString(lowMask),
+    invertedMaskSize: 32 - prefixSize,
+  };
 };
+
 /**
  * Finds the largest subnet mask that begins from ipNum and does not
  * exceed ipEndNum.
@@ -197,20 +245,23 @@ export const getMaskRange = (ipNum, prefixSize) => {
  * invertedMaskSize - Number of relevant bits in the inverted mask
  * @private
  */
-export const getOptimalRange = (ipNum, ipEndNum) => {
-    let prefixSize;
-    let optimalRange = null;
-    for (prefixSize = 32; prefixSize >= 0; prefixSize -= 1) {
-        const maskRange = getMaskRange(ipNum, prefixSize);
-        if (maskRange.ipLow === ipNum && maskRange.ipHigh <= ipEndNum) {
-            optimalRange = maskRange;
-        }
-        else {
-            break;
-        }
+export const getOptimalRange = (ipNum: IPNumber, ipEndNum: IPNumber): SubnetAnalysis | null => {
+  let prefixSize;
+  let optimalRange = null;
+
+  for (prefixSize = 32; prefixSize >= 0; prefixSize -= 1) {
+    const maskRange = getMaskRange(ipNum, prefixSize);
+
+    if (maskRange.ipLow === ipNum && maskRange.ipHigh <= ipEndNum) {
+      optimalRange = maskRange;
+    } else {
+      break;
     }
-    return optimalRange;
+  }
+
+  return optimalRange;
 };
+
 /**
  * Calculates an optimal set of IP masks for the given IP address range
  *
@@ -240,32 +291,40 @@ export const getOptimalRange = (ipNum, ipEndNum) => {
  * ```
  * @public
  */
-export const calculate = (ipStart, ipEnd) => {
-    let ipStartNum;
-    let ipEndNum;
-    let ipCurNum;
-    const rangeCollection = [];
-    try {
-        ipStartNum = toDecimal(ipStart);
-        ipEndNum = toDecimal(ipEnd);
+export const calculate = (ipStart: IPAny, ipEnd: IPAny): SubnetAnalysis[] | null => {
+  let ipStartNum: IPNumber;
+  let ipEndNum: IPNumber;
+  let ipCurNum: IPNumber;
+  const rangeCollection = [];
+
+  try {
+    ipStartNum = toDecimal(ipStart);
+    ipEndNum = toDecimal(ipEnd);
+  } catch (err) {
+    return null;
+  }
+
+  if (ipEndNum < ipStartNum) {
+    return null;
+  }
+
+  ipCurNum = ipStartNum;
+
+  while (ipCurNum <= ipEndNum) {
+    const optimalRange = getOptimalRange(ipCurNum, ipEndNum);
+
+    if (optimalRange === null) {
+      return null;
     }
-    catch (err) {
-        return null;
-    }
-    if (ipEndNum < ipStartNum) {
-        return null;
-    }
-    ipCurNum = ipStartNum;
-    while (ipCurNum <= ipEndNum) {
-        const optimalRange = getOptimalRange(ipCurNum, ipEndNum);
-        if (optimalRange === null) {
-            return null;
-        }
-        rangeCollection.push(optimalRange);
-        ipCurNum = optimalRange.ipHigh + 1;
-    }
-    return rangeCollection;
+
+    rangeCollection.push(optimalRange);
+
+    ipCurNum = optimalRange.ipHigh + 1;
+  }
+
+  return rangeCollection;
 };
+
 /**
  * Calculates a subnet mask from CIDR prefix.
  *
@@ -276,16 +335,18 @@ export const calculate = (ipStart, ipEnd) => {
  *         getMaskRange()
  * @public
  */
-export const calculateSubnetMask = (ip, prefixSize) => {
-    let ipNum;
-    try {
-        ipNum = toDecimal(ip);
-    }
-    catch (err) {
-        return null;
-    }
-    return getMaskRange(ipNum, prefixSize);
+export const calculateSubnetMask = (ip: IPAny, prefixSize: BitCount): SubnetAnalysis | null => {
+  let ipNum;
+
+  try {
+    ipNum = toDecimal(ip);
+  } catch (err) {
+    return null;
+  }
+
+  return getMaskRange(ipNum, prefixSize);
 };
+
 /**
  * Calculates a CIDR prefix from subnet mask.
  *
@@ -296,45 +357,50 @@ export const calculateSubnetMask = (ip, prefixSize) => {
  *         getMaskRange()
  * @public
  */
-export const calculateCIDRPrefix = (ip, subnetMask) => {
-    let ipNum;
-    let subnetMaskNum;
-    let prefix = 0;
-    let newPrefix = 0;
-    let prefixSize;
-    try {
-        ipNum = toDecimal(ip);
-        subnetMaskNum = toDecimal(subnetMask);
+export const calculateCIDRPrefix = (ip: IPAny, subnetMask: IPAny): SubnetAnalysis | null => {
+  let ipNum: IPNumber;
+  let subnetMaskNum: IPNumber;
+  let prefix: IPNumber = 0;
+  let newPrefix: IPNumber = 0;
+  let prefixSize: BitCount;
+
+  try {
+    ipNum = toDecimal(ip);
+    subnetMaskNum = toDecimal(subnetMask);
+  } catch (err) {
+    return null;
+  }
+
+  for (prefixSize = 0; prefixSize < 32; prefixSize += 1) {
+    // eslint-disable-next-line no-bitwise
+    newPrefix = (prefix + (1 << (32 - (prefixSize + 1)))) >>> 0;
+
+    // eslint-disable-next-line no-bitwise
+    if ((subnetMaskNum & newPrefix) >>> 0 !== newPrefix) {
+      break;
     }
-    catch (err) {
-        return null;
-    }
-    for (prefixSize = 0; prefixSize < 32; prefixSize += 1) {
-        // eslint-disable-next-line no-bitwise
-        newPrefix = (prefix + (1 << (32 - (prefixSize + 1)))) >>> 0;
-        // eslint-disable-next-line no-bitwise
-        if ((subnetMaskNum & newPrefix) >>> 0 !== newPrefix) {
-            break;
-        }
-        prefix = newPrefix;
-    }
-    return getMaskRange(ipNum, prefixSize);
+
+    prefix = newPrefix;
+  }
+
+  return getMaskRange(ipNum, prefixSize);
 };
+
 // @ts-expect-error browser export
 if (typeof window !== 'undefined') {
-    // @ts-expect-error browser export
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    window.IPSubnetCalculator = {
-        calculate,
-        calculateSubnetMask,
-        calculateCIDRPrefix,
-        getOptimalRange,
-        getMaskRange,
-        toString,
-        toDecimal,
-        isDecimalIp,
-        isIp,
-        getMask,
-        getPrefixMask,
-    };
+  // @ts-expect-error browser export
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  window.IPSubnetCalculator = {
+    calculate,
+    calculateSubnetMask,
+    calculateCIDRPrefix,
+    getOptimalRange,
+    getMaskRange,
+    toString,
+    toDecimal,
+    isDecimalIp,
+    isIp,
+    getMask,
+    getPrefixMask,
+  };
 }

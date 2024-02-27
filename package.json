@@ -2,13 +2,15 @@
   "author": "Aleksi Asikainen",
   "name": "ip-subnet-calculator",
   "description": "Calculate optimal subnet masks for standard and non-standard IP ranges",
-  "homepage": "https://github.com/franksrevenge/IPSubnetCalculator",
-  "version": "1.1.8",
+  "homepage": "https://github.com/salieri/IPSubnetCalculator",
+  "version": "2.0.0",
   "files": [
     "lib",
-    "examples"
+    "examples",
+    "README.md"
   ],
   "main": "lib/ip-subnet-calculator.js",
+  "types": "lib/ip-subnet-calculator.d.ts",
   "keywords": [
     "ip",
     "subnet",
@@ -24,20 +26,42 @@
   "optionalDependencies": {},
   "license": "MIT",
   "devDependencies": {
-    "coveralls": "^2.11.9",
-    "istanbul": "^0.4.3",
-    "lodash": "^4.12.0",
-    "mocha": "^2.4.0",
-    "mocha-istanbul": "^0.2.0",
-    "mocha-lcov-reporter": "^1.2.0",
-    "should": "^8.3.0"
+    "@types/lodash": "^4.14.202",
+    "@types/mocha": "^10.0.6",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "esbuild": "^0.20.1",
+    "eslint": "^8.56.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^27.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "eslint-plugin-unicorn": "^51.0.1",
+    "lodash": "^4.17.21",
+    "mocha": "^10.3.0",
+    "should": "^13.2.3",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.3"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/franksrevenge/IPSubnetCalculator.git"
+    "url": "git://github.com/salieri/IPSubnetCalculator.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.build.json && esbuild ./lib/ip-subnet-calculator.js --bundle --outfile=./lib/ip-subnet-calculator.browser.js --minify --platform=browser",
+    "build:watch": "tsc --watch",
+    "lint": "npm run lint:eslint",
+    "lint:eslint": "eslint './src/**/*.ts?(x)' --max-warnings 0",
+    "start": "npx http-server ."
   },
   "tonicExampleFilename": "examples/tonic.js"
 }
