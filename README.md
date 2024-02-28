@@ -26,10 +26,10 @@ This module calculates optimal subnet masks for non-standard IP ranges, e.g. `5.
 import * as IPSubnetCalculator from 'ip-subnet-calculator';
 // or: const IPSubnetCalculator = require('ip-subnet-calculator');
 
-console.log(IpSubnetCalculator.isIp('127.0.0.1')); // true
-console.log(IpSubnetCalculator.toDecimal('127.0.0.1')); // 2130706433
+console.log(IPSubnetCalculator.isIp('127.0.0.1')); // true
+console.log(IPSubnetCalculator.toDecimal('127.0.0.1')); // 2130706433
 
-console.log(IpSubnetCalculator.calculate('5.4.3.21', '6.7.8.9'));
+console.log(IPSubnetCalculator.calculate('5.4.3.21', '6.7.8.9'));
 ```
 
 ## Direct browser use
@@ -37,17 +37,17 @@ console.log(IpSubnetCalculator.calculate('5.4.3.21', '6.7.8.9'));
 <script src='lib/ip-subnet-calculator.browser.js'></script>
 
 <script>
-    console.log(isIp( 127.0.0.1')); // true
-    console.log(toDecimal('127.0.0.1')); // 2130706433
+    console.log(IPSubnetCalculator.isIp( 127.0.0.1')); // true
+    console.log(IPSubnetCalculator.toDecimal('127.0.0.1')); // 2130706433
     
-    console.log(calculate( '5.4.3.21', '6.7.8.9' ));
+    console.log(IPSubnetCalculator.calculate( '5.4.3.21', '6.7.8.9' ));
 </script>
 ```
 
 
 ## API
 
-### IpSubnetCalculator.calculate(ipStart, ipEnd)
+### IPSubnetCalculator.calculate(ipStart, ipEnd)
 Calculates an optimal set of IP masks for the given IP address range.
 
 > *ipStart* (`string|number`) Lowest IP in the range to be calculated in string (`123.123.123.0`) or numeric (`2071689984`) format.
@@ -91,35 +91,35 @@ Each object in question contain the following properties:
 | `invertedMaskStr` | String representation of the inverted prefix mask              |
 | `invertedSize`    | Size of the inverted prefix max in bits                        |
 
-### IpSubnetCalculator.calculateSubnetMask(ip, prefixSize)
+### IPSubnetCalculator.calculateSubnetMask(ip, prefixSize)
 Calculates a subnet mask from CIDR prefix.
 
 > *ip* (`string|number`) IP address in string or numeric format
 > 
 > *prefixSize* (`number`) Number of relevant bits in the subnet mask
 
-The function returns an object containing full description of the IP range, as described in `IpSubnetCalculator.calculate()`.
+The function returns an object containing full description of the IP range, as described in `IPSubnetCalculator.calculate()`.
 
-### IpSubnetCalculator.calculateCIDRPrefix(ip, subnetMask)
+### IPSubnetCalculator.calculateCIDRPrefix(ip, subnetMask)
 Calculates a CIDR prefix from subnet mask.
 
 > *ip* (`string|number`) IP address in string or numeric format
 >
 > *subnetMask* (`string|number`) IP subnet mask in string or numeric format
 
-The function returns an object containing full description of the IP range, as described in `IpSubnetCalculator.calculate()`.
+The function returns an object containing full description of the IP range, as described in `IPSubnetCalculator.calculate()`.
 
 
 ## Test Functions
 
-### IpSubnetCalculator.isIp(ipStr)
+### IPSubnetCalculator.isIp(ipStr)
 Tests whether string is an IP address.
 
 > *ipStr* (`string`) A string
 
 The function returns a `true` if the string is an IP address, `false` otherwise.
 
-### IpSubnetCalculator.isDecimalIp(ipNum)
+### IPSubnetCalculator.isDecimalIp(ipNum)
 Tests whether `ipNum` is a decimal IP address.
 
 > *ipNum* (`number`) A number
@@ -129,7 +129,7 @@ The function returns a `true` if the number is an IP address, `false` otherwise.
 
 ## Conversion Functions
 
-### IpSubnetCalculator.toDecimal(ip)
+### IPSubnetCalculator.toDecimal(ip)
 Calculates a decimal integer from an string IP address.
 
 > *ip* (`string|number`) IP address in string format
@@ -140,7 +140,7 @@ of an IP is passed to this function, it is returned unmodified.
 If an invalid value is passed to the function, it will `throw` an `Error` object.
 
 
-### IpSubnetCalculator.toString(num)
+### IPSubnetCalculator.toString(num)
 > *num* (`number|string`) Decimal representation of an IP address.
 
 The function returns an IP address as a string. If a valid string representation of an IP is passed to this function,
