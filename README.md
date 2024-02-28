@@ -1,36 +1,27 @@
-IP Subnet Calculator
-=================
-
-JavaScript class for calculating optimal subnet masks for non-standard IP ranges, e.g. `5.4.3.21 - 6.7.8.9`
+# IP Subnet Calculator
+This module calculates optimal subnet masks for non-standard IP ranges, e.g. `5.4.3.21 - 6.7.8.9`
 
 [View demo](http://salieri.github.io/IPSubnetCalculator/)
 
 
-What does it do?
-----------------
-
+## What does it do?
 * Calculates subnet masks for standard and non-standard IP ranges. For example, `10.0.0.5 - 10.0.0.23` will result in `10.0.0.5/32, 10.0.0.6/31, 10.0.0.8/29, 10.0.0.16/29`.
 * Calculates CIDR prefixes from subnet masks, e.g. `10.0.0.5/255.255.128.0` will result in `10.0.0.0/17`.
 * Calculates subnet masks from CIDR prefixes, e.g. `10.0.0.5/17` will result in `255.255.128.0`.
 
 
-Support
--------
-
+## Support
 * Node.js
 * Direct browser use
 
 
-Installation
-------------
-
+## Installation
 ```sh
 > npm install ip-subnet-calculator
 ```
 
 
-Node.js
--------
+## Node.js
 ```javascript
 import * as IPSubnetCalculator from 'ip-subnet-calculator';
 // or: const IPSubnetCalculator = require('ip-subnet-calculator');
@@ -41,9 +32,7 @@ console.log(IpSubnetCalculator.toDecimal('127.0.0.1')); // 2130706433
 console.log(IpSubnetCalculator.calculate('5.4.3.21', '6.7.8.9'));
 ```
 
-
-Direct browser use
-------------------
+## Direct browser use
 ```html
 <script src='lib/ip-subnet-calculator.browser.js'></script>
 
@@ -56,10 +45,9 @@ Direct browser use
 ```
 
 
-API
----
-### IpSubnetCalculator.calculate(ipStart, ipEnd) ###
+## API
 
+### IpSubnetCalculator.calculate(ipStart, ipEnd)
 Calculates an optimal set of IP masks for the given IP address range.
 
 > *ipStart* (`string|number`) Lowest IP in the range to be calculated in string (`123.123.123.0`) or numeric (`2071689984`) format.
@@ -103,9 +91,7 @@ Each object in question contain the following properties:
 | `invertedMaskStr` | String representation of the inverted prefix mask              |
 | `invertedSize`    | Size of the inverted prefix max in bits                        |
 
-
-### IpSubnetCalculator.calculateSubnetMask(ip, prefixSize) ###
-
+### IpSubnetCalculator.calculateSubnetMask(ip, prefixSize)
 Calculates a subnet mask from CIDR prefix.
 
 > *ip* (`string|number`) IP address in string or numeric format
@@ -114,9 +100,7 @@ Calculates a subnet mask from CIDR prefix.
 
 The function returns an object containing full description of the IP range, as described in `IpSubnetCalculator.calculate()`.
 
-
-### IpSubnetCalculator.calculateCIDRPrefix(ip, subnetMask) ###
-
+### IpSubnetCalculator.calculateCIDRPrefix(ip, subnetMask)
 Calculates a CIDR prefix from subnet mask.
 
 > *ip* (`string|number`) IP address in string or numeric format
@@ -126,18 +110,16 @@ Calculates a CIDR prefix from subnet mask.
 The function returns an object containing full description of the IP range, as described in `IpSubnetCalculator.calculate()`.
 
 
-## Test Functions ##
+## Test Functions
 
-### IpSubnetCalculator.isIp(ipStr) ###
-
+### IpSubnetCalculator.isIp(ipStr)
 Tests whether string is an IP address.
 
 > *ipStr* (`string`) A string
 
 The function returns a `true` if the string is an IP address, `false` otherwise.
 
-### IpSubnetCalculator.isDecimalIp(ipNum) ###
-
+### IpSubnetCalculator.isDecimalIp(ipNum)
 Tests whether `ipNum` is a decimal IP address.
 
 > *ipNum* (`number`) A number
@@ -145,10 +127,9 @@ Tests whether `ipNum` is a decimal IP address.
 The function returns a `true` if the number is an IP address, `false` otherwise.
 
 
-## Conversion Functions ##
+## Conversion Functions
 
-### IpSubnetCalculator.toDecimal(ip) ###
-
+### IpSubnetCalculator.toDecimal(ip)
 Calculates a decimal integer from an string IP address.
 
 > *ip* (`string|number`) IP address in string format
@@ -159,8 +140,7 @@ of an IP is passed to this function, it is returned unmodified.
 If an invalid value is passed to the function, it will `throw` an `Error` object.
 
 
-### IpSubnetCalculator.toString(num) ###
-
+### IpSubnetCalculator.toString(num)
 > *num* (`number|string`) Decimal representation of an IP address.
 
 The function returns an IP address as a string. If a valid string representation of an IP is passed to this function,
@@ -169,9 +149,7 @@ it is returned unmodified.
 If an invalid value is passed to the function, it will `throw` an `Error` object.
 
 
-License
--------
-
+## License
 [MIT](http://opensource.org/licenses/MIT)
 
 
